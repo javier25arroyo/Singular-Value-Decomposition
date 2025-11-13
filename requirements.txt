@@ -1,4 +1,4 @@
-# Añade aquí tus dependencias (una por línea), por ejemplo:
-# numpy
-# scipy
-# matplotlib
+numpy>=1.26
+scipy>=1.11
+matplotlib>=3.8
+jupyterlab>=4.0

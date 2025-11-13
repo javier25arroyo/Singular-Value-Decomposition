@@ -7,15 +7,31 @@ Configurar la base del repositorio y documentar cómo instalar, ejecutar y estru
 
 ## Requisitos
 - Python 3.10 o superior
+- pip
 
 ## Instalación
 1) Crear entorno virtual (opcional pero recomendado):
-   - Windows PowerShell: `python -m venv .venv && .\.venv\Scripts\Activate.ps1`
+   - Windows PowerShell: `python -m venv .venv; .\.venv\Scripts\Activate.ps1`
 2) Instalar dependencias: `pip install -r requirements.txt`
 
 ## Uso
 - Añade tus scripts en `src/` o un paquete `proyecto_svd/` y ejecuta con `python tu_script.py`.
 - Para notebooks, usa `notebooks/` y ejecuta con Jupyter o VS Code.
+
+Ejemplo rápido (SVD con NumPy):
+```python
+import numpy as np
+
+A = np.array([[3, 1, 1],
+              [-1, 3, 1]])
+
+U, s, VT = np.linalg.svd(A, full_matrices=False)
+Sigma = np.diag(s)
+
+print('U =\n', U)
+print('Sigma =\n', Sigma)
+print('V^T =\n', VT)
+```
 
 ## Estructura sugerida
 ```
