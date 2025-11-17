@@ -1,3 +1,8 @@
-from .main import svd, reconstruct
+"""
+Paquete proyecto_svd para compresión de imágenes usando SVD.
+"""
 
-__all__ = ["svd", "reconstruct"]
+from .svd_image import SVDImageProcessor
+from .gui import SVDImageApp, main
+
+__all__ = ["SVDImageProcessor", "SVDImageApp", "main"]

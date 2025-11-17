@@ -1,0 +1,8 @@
+Coloca aquí tus imágenes de prueba.
+
+Formatos soportados:
+- PNG
+- JPG/JPEG
+- BMP
+- GIF
+- TIFF
