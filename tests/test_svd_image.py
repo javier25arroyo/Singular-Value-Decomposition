@@ -60,12 +60,10 @@ def test_compute_svd():
         processor = SVDImageProcessor(f.name)
         U_channels, s_channels, VT_channels = processor.compute_svd()
         
-        # Verificar que se calculó SVD para cada canal
         assert len(U_channels) == 3
         assert len(s_channels) == 3
         assert len(VT_channels) == 3
         
-        # Verificar dimensiones
         for i in range(3):
             assert U_channels[i].shape[0] == 50
             assert VT_channels[i].shape[1] == 50
@@ -83,11 +81,9 @@ def test_reconstruct_image():
         processor = SVDImageProcessor(f.name)
         original = processor.image_array.copy()
         
-        # Reconstruir con todos los valores singulares
         max_k = processor.get_max_k()
         reconstructed = processor.reconstruct_image(max_k)
         
-        # La reconstrucción completa debe ser casi igual a la original
         assert reconstructed.shape == original.shape
         assert np.allclose(reconstructed, original, atol=1)
         
@@ -101,10 +97,8 @@ def test_compression_ratio():
         img.save(f.name)
         
         processor = SVDImageProcessor(f.name)
-        
-        # Con k pequeño, ratio debe ser alto
+
         ratio_small = processor.get_compression_ratio(10)
-        # Con k grande, ratio debe ser bajo
         ratio_large = processor.get_compression_ratio(50)
         
         assert ratio_small > ratio_large
@@ -121,9 +115,7 @@ def test_energy_retained():
         
         processor = SVDImageProcessor(f.name)
         
-        # Con k=1, energía debe ser baja
         energy_low = processor.get_energy_retained(1)
-        # Con k=max, energía debe ser 100%
         max_k = processor.get_max_k()
         energy_max = processor.get_energy_retained(max_k)
         
@@ -143,7 +135,6 @@ def test_get_max_k():
         processor = SVDImageProcessor(f.name)
         max_k = processor.get_max_k()
         
-        # max_k debe ser el mínimo entre ancho y alto
         assert max_k == min(80, 60)
         
         os.unlink(f.name)
@@ -157,7 +148,6 @@ def test_reconstruction_with_small_k():
         
         processor = SVDImageProcessor(f.name)
         
-        # Reconstruir con k=5
         reconstructed = processor.reconstruct_image(5)
         
         assert reconstructed.shape == processor.image_array.shape

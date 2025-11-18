@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import os
 
-from svd_image import SVDImageProcessor
+from .svd_image import SVDImageProcessor
 
 
 class SVDImageApp:
