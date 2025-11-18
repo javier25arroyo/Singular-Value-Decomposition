@@ -9,6 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 from .svd_image import SVDImageProcessor
 
@@ -25,21 +27,36 @@ class SVDImageApp:
         """
         self.root = root
         self.root.title("SVD Image Compression - Descomposición en Valores Singulares")
-        self.root.geometry("1400x800")
+        self.root.geometry(os.getenv("GUI_SIZE", "1400x800"))
         self.root.configure(bg='#f0f0f0')
         
         self.processor = None
         self.current_image = None
         self.original_photo = None
         self.compressed_photo = None
+
+        self._update_job = None
+        self._last_k = None
+        try:
+            self._debounce_ms = int(os.getenv("DEBOUNCE_MS", "120"))
+        except Exception:
+            self._debounce_ms = 120
         
         self.setup_ui()
+
+        autoload = os.getenv("AUTOLOAD_IMAGE")
+        if autoload and os.path.exists(autoload):
+            self._load_image_from_path(autoload)
     
     def setup_ui(self):
         """Configura la interfaz de usuario."""
         # Estilo
         style = ttk.Style()
-        style.theme_use('clam')
+        theme = os.getenv('TTK_THEME', 'clam')
+        try:
+            style.theme_use(theme)
+        except Exception:
+            style.theme_use('clam')
         style.configure('Title.TLabel', font=('Arial', 16, 'bold'), background='#f0f0f0')
         style.configure('Info.TLabel', font=('Arial', 10), background='#f0f0f0')
         style.configure('Large.TButton', font=('Arial', 12))
@@ -158,7 +175,12 @@ class SVDImageApp:
             bg='white'
         ).pack(side=tk.LEFT, padx=(0, 10))
         
-        self.k_var = tk.IntVar(value=50)
+        default_k = 50
+        try:
+            default_k = int(os.getenv("DEFAULT_K", "50"))
+        except Exception:
+            default_k = 50
+        self.k_var = tk.IntVar(value=default_k)
         self.k_slider = ttk.Scale(
             slider_container,
             from_=1,
@@ -228,6 +250,19 @@ class SVDImageApp:
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo cargar la imagen:\n{str(e)}")
     
+    def _load_image_from_path(self, file_path):
+        try:
+            self.processor = SVDImageProcessor(file_path)
+            self.processor.compute_svd()
+            self.display_original_image()
+            max_k = self.processor.get_max_k()
+            self.k_slider.config(to=max_k, state=tk.NORMAL)
+            self.k_var.set(min(self.k_var.get(), max_k))
+            self.save_btn.config(state=tk.NORMAL)
+            self._apply_compression()
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo cargar la imagen:\n{str(e)}")
+
     def display_original_image(self):
         """Muestra la imagen original en el canvas."""
         img = self.processor.original_image
