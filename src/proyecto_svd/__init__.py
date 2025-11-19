@@ -1,2 +1,2 @@
 from .main import main
-from .svd_image import SVDImageProcessor
+from .core.svd_processor import SVDImageProcessor

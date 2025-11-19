@@ -12,7 +12,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from .svd_image import SVDImageProcessor
+from ..core.svd_processor import SVDImageProcessor
 
 
 class SVDImageApp:
